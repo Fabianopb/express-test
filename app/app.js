@@ -1,9 +1,8 @@
 var express = require('express');
+var path = require('path');
 var app = express();
 
-app.get('/', function(request, response) {
-  response.send("Hello World");
-});
+app.use(express.static(path.join(__dirname, '../dist')));
 
 app.get('/json_endpoint', function(request, response) {
   var fruits = ['apples', 'bananas', 'plums'];
