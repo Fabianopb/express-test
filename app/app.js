@@ -2,6 +2,9 @@ var express = require('express');
 var path = require('path');
 var app = express();
 
+var logger = require('./logger');
+app.use(logger);
+
 app.use(express.static(path.join(__dirname, '../dist')));
 
 app.get('/json_endpoint', function(request, response) {
