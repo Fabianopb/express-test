@@ -20,7 +20,16 @@ app.param('route', function(request, response, next) {
 
 app.get('/json_endpoint', function(request, response) {
   var fruits = ['apples', 'bananas', 'plums'];
-  response.json(fruits);
+  var limit = request.query.limit;
+  if (limit) {
+    if (limit >= 1 && limit <= fruits.length) {
+      response.json(fruits.slice(0, limit));
+    } else {
+      response.status(400).json('Invalid limit! Valid is from 1 to ' + fruits.length);
+    }
+  } else {
+    response.json(fruits);
+  }
 });
 
 app.get('/html_endpoint', function(request, response) {
