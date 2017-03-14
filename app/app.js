@@ -5,7 +5,18 @@ var app = express();
 var logger = require('./logger');
 app.use(logger);
 
+// middleware
+
 app.use(express.static(path.join(__dirname, '../dist')));
+
+// intercepted params
+
+app.param('route', function(request, response, next) {
+  request.normalizedRoute = request.params.route.toLowerCase();
+  next();
+});
+
+// endpoints
 
 app.get('/json_endpoint', function(request, response) {
   var fruits = ['apples', 'bananas', 'plums'];
@@ -19,6 +30,20 @@ app.get('/html_endpoint', function(request, response) {
 
 app.get('/redirect_me', function(request, response) {
   response.redirect(301, '/');
+});
+
+app.get('/dynamic/:route', function(request, response) {
+  var cities = {
+    'paris': 'Eiffel Tower and Champs Elyseés',
+    'lisbon': 'Belém Tower and Alfama',
+    'barcelona': 'Parque Guell and Las Remblas'
+  };
+  var touristPoints = cities[request.normalizedRoute];
+  if (touristPoints) {
+    response.json(touristPoints);
+  } else {
+    response.status(404).json('Sorry, we don\'t have info for this city');
+  }
 });
 
 app.listen(3000, function() {
