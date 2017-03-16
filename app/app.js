@@ -2,8 +2,14 @@ var express = require('express');
 var path = require('path');
 var app = express();
 
+var bodyParser = require('body-parser');
+var parseUrlencoded = bodyParser.urlencoded({ extended: false });
+
 var logger = require('./logger');
 app.use(logger);
+
+// database
+var fruits = ['apples', 'bananas', 'plums'];
 
 // middleware
 
@@ -19,7 +25,6 @@ app.param('route', function(request, response, next) {
 // endpoints
 
 app.get('/json_endpoint', function(request, response) {
-  var fruits = ['apples', 'bananas', 'plums'];
   var limit = request.query.limit;
   if (limit) {
     if (limit >= 1 && limit <= fruits.length) {
@@ -30,6 +35,12 @@ app.get('/json_endpoint', function(request, response) {
   } else {
     response.json(fruits);
   }
+});
+
+app.post('/json_endpoint', parseUrlencoded, function(request, response) {
+  var newFruit = request.body.fruit;
+  fruits.push(newFruit)
+  response.status(201).json(newFruit);
 });
 
 app.get('/html_endpoint', function(request, response) {
