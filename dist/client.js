@@ -1,8 +1,8 @@
 $(function() {
 
   function appendFruit(fruit) {
-    var container = $('.test-style').find('ul');
-    container.append('<li><a class="remove" href="#">(x)</a> ' + fruit + '</li>');
+    var target = $('.test-style').find('ul');
+    target.append('<li><a class="remove" href="#">(x)</a> <span>' + fruit + '</span></li>');
   }
 
   $.get('/json_endpoint', function(response) {
@@ -20,6 +20,20 @@ $(function() {
       data: fruitData,
     }).done(function(newFruit) {
       appendFruit(newFruit);
+    });
+  });
+
+  $('.test-style').find('ul').on('click', '.remove', function(event) {
+    if (!confirm('Are you sure you want to delete this fruit?')) {
+      return false;
+    }
+    var target = $(this).closest('li');
+    var fruit = target.find('span').text();
+    $.ajax({
+      type: 'DELETE',
+      url: '/json_endpoint/' + fruit,
+    }).done(function() {
+      target.remove();
     });
   });
 

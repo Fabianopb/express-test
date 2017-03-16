@@ -43,6 +43,11 @@ app.post('/json_endpoint', parseUrlencoded, function(request, response) {
   response.status(201).json(newFruit);
 });
 
+app.delete('/json_endpoint/:name', function(request, response) {
+  fruits.splice(fruits.indexOf(request.params.name), 1);
+  response.sendStatus(200);
+});
+
 app.get('/html_endpoint', function(request, response) {
   var template = '<ul><li>item 1</li><li>item 2</li><li>item 2</li></ul>';
   response.send(template);
