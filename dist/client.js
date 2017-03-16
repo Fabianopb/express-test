@@ -1,11 +1,13 @@
 $(function() {
 
+  var fruitsUrl = '/fruits';
+
   function appendFruit(fruit) {
     var target = $('.test-style').find('ul');
     target.append('<li><a class="remove" href="#">(x)</a> <span>' + fruit + '</span></li>');
   }
 
-  $.get('/json_endpoint', function(response) {
+  $.get(fruitsUrl, function(response) {
     for (var i = 0; i < response.length; i++) {
       appendFruit(response[i]);
     }
@@ -16,7 +18,7 @@ $(function() {
     var fruitData = $(this).serialize();
     $.ajax({
       type: 'POST',
-      url: '/json_endpoint',
+      url: fruitsUrl,
       data: fruitData,
     }).done(function(newFruit) {
       appendFruit(newFruit);
@@ -31,7 +33,7 @@ $(function() {
     var fruit = target.find('span').text();
     $.ajax({
       type: 'DELETE',
-      url: '/json_endpoint/' + fruit,
+      url: fruitsUrl + '/' + fruit,
     }).done(function() {
       target.remove();
     });

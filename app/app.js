@@ -2,18 +2,13 @@ var express = require('express');
 var path = require('path');
 var app = express();
 
-var bodyParser = require('body-parser');
-var parseUrlencoded = bodyParser.urlencoded({ extended: false });
-
 var logger = require('./logger');
 app.use(logger);
 
-// database
-var fruits = ['apples', 'bananas', 'plums'];
-
-// middleware
-
 app.use(express.static(path.join(__dirname, '../dist')));
+
+var fruits = require('./routes/fruits');
+app.use('/fruits', fruits);
 
 // intercepted params
 
@@ -23,30 +18,6 @@ app.param('route', function(request, response, next) {
 });
 
 // endpoints
-
-app.route('/json_endpoint')
-  .get(function(request, response) {
-    var limit = request.query.limit;
-    if (limit) {
-      if (limit >= 1 && limit <= fruits.length) {
-        response.json(fruits.slice(0, limit));
-      } else {
-        response.status(400).json('Invalid limit! Valid is from 1 to ' + fruits.length);
-      }
-    } else {
-      response.json(fruits);
-    }
-  })
-  .post(parseUrlencoded, function(request, response) {
-    var newFruit = request.body.fruit;
-    fruits.push(newFruit)
-    response.status(201).json(newFruit);
-  });
-
-app.delete('/json_endpoint/:name', function(request, response) {
-  fruits.splice(fruits.indexOf(request.params.name), 1);
-  response.sendStatus(200);
-});
 
 app.get('/html_endpoint', function(request, response) {
   var template = '<ul><li>item 1</li><li>item 2</li><li>item 2</li></ul>';
