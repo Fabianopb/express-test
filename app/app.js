@@ -24,24 +24,24 @@ app.param('route', function(request, response, next) {
 
 // endpoints
 
-app.get('/json_endpoint', function(request, response) {
-  var limit = request.query.limit;
-  if (limit) {
-    if (limit >= 1 && limit <= fruits.length) {
-      response.json(fruits.slice(0, limit));
+app.route('/json_endpoint')
+  .get(function(request, response) {
+    var limit = request.query.limit;
+    if (limit) {
+      if (limit >= 1 && limit <= fruits.length) {
+        response.json(fruits.slice(0, limit));
+      } else {
+        response.status(400).json('Invalid limit! Valid is from 1 to ' + fruits.length);
+      }
     } else {
-      response.status(400).json('Invalid limit! Valid is from 1 to ' + fruits.length);
+      response.json(fruits);
     }
-  } else {
-    response.json(fruits);
-  }
-});
-
-app.post('/json_endpoint', parseUrlencoded, function(request, response) {
-  var newFruit = request.body.fruit;
-  fruits.push(newFruit)
-  response.status(201).json(newFruit);
-});
+  })
+  .post(parseUrlencoded, function(request, response) {
+    var newFruit = request.body.fruit;
+    fruits.push(newFruit)
+    response.status(201).json(newFruit);
+  });
 
 app.delete('/json_endpoint/:name', function(request, response) {
   fruits.splice(fruits.indexOf(request.params.name), 1);
